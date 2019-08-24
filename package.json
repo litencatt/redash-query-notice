@@ -1,0 +1,19 @@
+{
+  "name": "redash-query-notice",
+  "version": "1.0.0",
+  "description": "Notify redash query result on GAS",
+  "scripts": {
+    "lint": "eslint src/*.ts",
+    "lint:fix": "eslint --fix src/*.ts"
+  },
+  "author": "litencatt",
+  "license": "MIT",
+  "homepage": "",
+  "dependencies": {
+    "@types/google-apps-script": "0.0.56"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.2.1",
+    "tslint": "^5.19.0"
+  }
+}
