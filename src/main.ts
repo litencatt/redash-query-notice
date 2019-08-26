@@ -16,7 +16,7 @@ function notify() {
   const numColumn = sheet.getLastColumn();
   const slackChannel = sheet.getSheetValues(startRow, 1, 1, 1)[0][0];
   const notifyAt     = sheet.getSheetValues(startRow, 2, 1, 1)[0][0];
-  const queryIds     = sheet.getSheetValues(startRow, 3, 3, numColumn - 1)[0];
+  const queryIds     = sheet.getSheetValues(startRow, 3, 3, numColumn - 2)[0];
 
   // redash api実行
   const fields = [];
