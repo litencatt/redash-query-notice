@@ -22,7 +22,7 @@ function notify() {
   const fields = [];
   queryIds.forEach((queryId) => {
     queryId = parseInt(queryId, 10);
-    const res = UrlFetchApp.fetch(`https://${redashUrl}/api/queries/${queryId}/results.json?api_key=${redashToken}`, {method: "get"});
+    const res = UrlFetchApp.fetch(`${redashUrl}/api/queries/${queryId}/results.json?api_key=${redashToken}`, {method: "get"});
     const parsedResult = JSON.parse(res.getContentText()).query_result.data.rows[0];
     Object.keys(parsedResult).forEach((key) => {
       fields.push({
