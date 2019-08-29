@@ -7,16 +7,22 @@ const slackUrl    = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
 const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
 
 function notify() {
-  const result = [];
-
   // spread のconfig sheetからqueryIds取得
   const s = SpreadsheetApp.openById(sheetId);
   const sheet = s.getSheetByName("config");
   const startRow = 2;
   const numColumn = sheet.getLastColumn();
-  const slackChannel = sheet.getSheetValues(startRow, 1, 1, 1)[0][0];
-  const notifyAt     = sheet.getSheetValues(startRow, 2, 1, 1)[0][0];
-  const queryIds     = sheet.getSheetValues(startRow, 3, 3, numColumn - 2)[0];
+  const notifyAt  = sheet.getSheetValues(startRow, 2, 1, 1)[0][0];
+  const queryIds  = sheet.getSheetValues(startRow, 3, 3, numColumn - 2)[0];
+
+  const now = new Date();
+  const nowH = `0${now.getHours()}`.slice(-2);
+  const nowM = `00${now.getMinutes()}`.slice(-2);
+  const notifyH = `0${notifyAt.getHours()}`.slice(-2);
+  const notifyM = `00${notifyAt.getMinutes()}`.slice(-2);
+  if (notifyH !== nowH || notifyM !== nowM) {
+    return;
+  }
 
   // redash api実行
   const fields = [];
