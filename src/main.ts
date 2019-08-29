@@ -2,8 +2,7 @@ const ps = PropertiesService.getScriptProperties();
 const sheetId     = ps.getProperty("SHEET_ID");
 const redashUrl   = ps.getProperty("REDASH_URL");
 const redashToken = ps.getProperty("REDASH_USER_TOKEN");
-const slackToken  = ps.getProperty("SLACK_TOKEN");
-const slackUrl    = ps.getProperty("SLACK_URL");
+const slackUrl    = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
 
 const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
 
