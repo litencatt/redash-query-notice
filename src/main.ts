@@ -3,6 +3,7 @@ const sheetId     = ps.getProperty("SHEET_ID");
 const redashUrl   = ps.getProperty("REDASH_URL");
 const redashToken = ps.getProperty("REDASH_USER_TOKEN");
 const slackToken  = ps.getProperty("SLACK_TOKEN");
+const slackUrl    = ps.getProperty("SLACK_URL");
 
 const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
 
@@ -48,7 +49,7 @@ function notify() {
     },
   });
 
-  UrlFetchApp.fetch("https://slack.com/api/chat.postMessage", {
+  UrlFetchApp.fetch(slackUrl, {
     method: "post",
     payload: {
       token: slackToken,
