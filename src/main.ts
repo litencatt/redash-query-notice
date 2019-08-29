@@ -27,35 +27,34 @@ function notify() {
     const parsedResult = JSON.parse(res.getContentText()).query_result.data.rows[0];
     Object.keys(parsedResult).forEach((key) => {
       fields.push({
-        type: "mrkdwn",
-        text: `*${key}*\n${parsedResult[key]}`,
+        title: key,
+        value: parsedResult[key],
+        short: true,
       });
     });
   });
 
-  const message = [
+  const attachments = [
     {
-      type: "section",
+      color: "section",
       fields,
     },
   ];
 
   // slack通知
-  UrlFetchApp.fetch("https://slack.com/api/channels.join", {
-    method: "post",
-    payload: {
-      token: slackToken,
-      channel: slackChannel,
-    },
-  });
+  const payload = {
+    text: "Redash Query Notice",
+    attachments: [
+      {
+        color: "good",
+        fields,
+      },
+    ],
+  };
 
   UrlFetchApp.fetch(slackUrl, {
     method: "post",
-    payload: {
-      token: slackToken,
-      channel: slackChannel,
-      text: "Redash Query Notice",
-      blocks: JSON.stringify(message),
-    },
+    contentType: "application/json",
+    payload: JSON.stringify(payload),
   });
 }
