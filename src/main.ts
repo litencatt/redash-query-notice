@@ -1,3 +1,7 @@
+import {Slack} from './slack'
+import { Redash } from './redash';
+
+
 const ps = PropertiesService.getScriptProperties();
 const sheetId     = ps.getProperty("SHEET_ID");
 const redashUrl   = ps.getProperty("REDASH_URL");
@@ -27,24 +31,15 @@ function notify() {
   // redash api実行
   const fields = [];
   queryIds.forEach((queryId) => {
-    queryId = parseInt(queryId, 10);
-    const res = UrlFetchApp.fetch(`${redashUrl}/api/queries/${queryId}/results.json?api_key=${redashToken}`);
-    const parsedResult = JSON.parse(res.getContentText()).query_result.data.rows[0];
-    Object.keys(parsedResult).forEach((key) => {
+    const res = redash.request(parseInt(queryId, 10))
+    Object.keys(res).forEach((key) => {
       fields.push({
         title: key,
-        value: parsedResult[key],
+        value: res[key],
         short: true,
       });
     });
   });
-
-  const attachments = [
-    {
-      color: "section",
-      fields,
-    },
-  ];
 
   // slack通知
   const payload = {
@@ -57,9 +52,6 @@ function notify() {
     ],
   };
 
-  UrlFetchApp.fetch(slackUrl, {
-    method: "post",
-    contentType: "application/json",
-    payload: JSON.stringify(payload),
-  });
+  const slack = new Slack();
+  const res = slack.postMessaage(slackUrl, payload);
 }
