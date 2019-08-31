@@ -43,11 +43,13 @@ function notify() {
 
   // slack通知
   const payload = {
-    text: "Redash Query Notice",
     attachments: [
       {
         color: "good",
-        fields,
+        title: "Redash Query Notice",
+        title_link: sheetUrl,
+        fields: fields,
+        footer: "<https://github.com/litencatt/redash-query-notice|Code URL>",
       },
     ],
   };
