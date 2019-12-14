@@ -31,12 +31,12 @@ function notify() {
 
   for (const task of data) {
     const enabled = task[enabledColumn];
+    const notifyAt = task[notifyAtColumn];
+    const queryIds = task[idsColumn].split("\n");
+
     if (!enabled) {
       continue;
     }
-
-    const notifyAt  = task[notifyAtColumn];
-    const queryIds  = task[idsColumn].split("\n");
 
     // Control execution timing
     const notifyH = `0${notifyAt.getHours()}`.slice(-2);
