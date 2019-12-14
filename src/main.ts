@@ -52,13 +52,17 @@ function notify() {
     // Execute redash API
     const fields = [];
     queryIds.forEach((queryId) => {
-      const res = redash.request(parseInt(queryId, 10))
-      Object.keys(res).forEach((key) => {
-        fields.push({
-          title: key,
-          value: res[key],
-          short: true,
-        });
+      const data = redash.request(parseInt(queryId, 10));
+      const title = data.columns.map((column) => { return column.name }).join();
+      const rowsObj = data.rows[0];
+      const value = Object.keys(rowsObj).forEach((key) => {
+        Object.values(rowsObj[key]).join();
+      });
+
+      fields.push({
+        title: title,
+        value: value,
+        short: true,
       });
     });
 
