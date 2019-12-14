@@ -31,11 +31,7 @@ function notify() {
 
   for (const task of data) {
     const enabled = task[enabledColumn];
-    if (typeof enabled === "boolean") {
-      if (!enabled) {
-        continue;
-      }
-    } else {
+    if (!enabled) {
       continue;
     }
 
