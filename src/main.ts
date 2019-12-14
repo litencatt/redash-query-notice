@@ -16,8 +16,8 @@ function notify() {
 
   const startRow = 2;
   const startColumn = 1;
-  const numColumns = sheet.getLastColumn();
   const numRows = sheet.getLastRow();
+  const numColumns = sheet.getLastColumn();
   const data = sheet.getSheetValues(startRow, startColumn, numRows - 1, numColumns);
 
   // Column number assigned to the task
