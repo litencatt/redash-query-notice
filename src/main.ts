@@ -54,14 +54,17 @@ function notify() {
     queryIds.forEach((queryId) => {
       const data = redash.request(parseInt(queryId, 10));
       const title = data.columns.map((column) => { return column.name }).join();
-      const rowsObj = data.rows[0];
-      const value = Object.keys(rowsObj).forEach((key) => {
-        Object.values(rowsObj[key]).join();
+      const values = [];
+      const rows = data.rows;
+      const keys = Object.keys(rows);
+      rows.forEach((row) => {
+        const rowKeys = Object.keys(row);
+        values.push(rowKeys.map((rowKey) => { return row[rowKey] }).join());
       });
 
       fields.push({
         title: title,
-        value: value,
+        value: values.join(),
         short: true,
       });
     });
