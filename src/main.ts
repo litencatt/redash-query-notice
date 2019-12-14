@@ -61,8 +61,8 @@ function notify() {
       });
 
       fields.push({
-        title: title,
-        value: values.join(),
+        title: columns.join(),
+        value: values.join("\n"),
         short: true,
       });
     });
