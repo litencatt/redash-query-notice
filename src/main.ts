@@ -53,13 +53,11 @@ function notify() {
     const fields = [];
     queryIds.forEach((queryId) => {
       const data = redash.request(parseInt(queryId, 10));
-      const title = data.columns.map((column) => { return column.name }).join();
+      const columns = data.columns.map((column) => { return column.name });
       const values = [];
       const rows = data.rows;
-      const keys = Object.keys(rows);
       rows.forEach((row) => {
-        const rowKeys = Object.keys(row);
-        values.push(rowKeys.map((rowKey) => { return row[rowKey] }).join());
+        values.push(columns.map((rowKey) => { return row[rowKey] }).join());
       });
 
       fields.push({
