@@ -42,7 +42,7 @@ function notify() {
     const notifyH = `0${notifyAt.getHours()}`.slice(-2);
     const notifyM = `00${notifyAt.getMinutes()}`.slice(-2);
     if (notifyH !== nowH || notifyM !== nowM) {
-      return;
+      continue;
     }
 
     // Execute redash API
