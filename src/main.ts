@@ -10,61 +10,73 @@ function notify() {
   // Setup to read columns from spread sheat
   const s = SpreadsheetApp.openById(sheetId);
   const sheet = s.getSheetByName("config");
+
   const startRow = 2;
-  const numColumn = sheet.getLastColumn();
+  const startColumn = 2;
+  const numColumns = sheet.getLastColumn();
+  const numRows = sheet.getLastRow();
 
-  // Get notify_at from spread sheat
-  const notifyAt  = sheet.getSheetValues(startRow, 2, 1, 1)[0][0];
-
-  // Get query Ids from spread sheat
-  const queryIds  = sheet.getSheetValues(startRow, 3, 3, numColumn - 2)[0];
-
-  // Control execution timing
+  // Get now time string
   const now = new Date();
   const nowH = `0${now.getHours()}`.slice(-2);
   const nowM = `00${now.getMinutes()}`.slice(-2);
-  const notifyH = `0${notifyAt.getHours()}`.slice(-2);
-  const notifyM = `00${notifyAt.getMinutes()}`.slice(-2);
-  if (notifyH !== nowH || notifyM !== nowM) {
-    return;
-  }
 
-  // Exec redash API
-  const fields = [];
-  queryIds.forEach((queryId) => {
-    queryId = parseInt(queryId, 10);
-    const res = UrlFetchApp.fetch(`${redashUrl}/api/queries/${queryId}/results.json?api_key=${redashToken}`);
-    const parsedResult = JSON.parse(res.getContentText()).query_result.data.rows[0];
-    Object.keys(parsedResult).forEach((key) => {
-      fields.push({
-        title: key,
-        value: parsedResult[key],
-        short: true,
+  // Column number assigned to the task
+  const notifyToColumn = 0;
+  const notifyAtColumn = 0;
+  const idsColumn = 1;
+  const webhookColumn = 2;
+
+  const data = sheet.getSheetValues(startRow, startColumn, numRows, numColumns);
+
+  for (const task of data) {
+    const notifyAt  = task[notifyAtColumn];
+    const queryIds  = task[idsColumn].split("\n");
+
+    // Control execution timing
+    const notifyH = `0${notifyAt.getHours()}`.slice(-2);
+    const notifyM = `00${notifyAt.getMinutes()}`.slice(-2);
+    if (notifyH !== nowH || notifyM !== nowM) {
+      return;
+    }
+
+    // Execute redash API
+    const fields = [];
+    queryIds.forEach((queryId) => {
+      queryId = parseInt(queryId, 10);
+      const res = UrlFetchApp.fetch(`${redashUrl}/api/queries/${queryId}/results.json?api_key=${redashToken}`);
+      const parsedResult = JSON.parse(res.getContentText()).query_result.data.rows[0];
+      Object.keys(parsedResult).forEach((key) => {
+        fields.push({
+          title: key,
+          value: parsedResult[key],
+          short: true,
+        });
       });
     });
-  });
 
-  const attachments = [
-    {
-      color: "section",
-      fields,
-    },
-  ];
-
-  // Notify to slack
-  const payload = {
-    text: "Redash Query Notice",
-    attachments: [
+    const attachments = [
       {
-        color: "good",
+        color: "section",
         fields,
       },
-    ],
-  };
+    ];
 
-  UrlFetchApp.fetch(slackUrl, {
-    method: "post",
-    contentType: "application/json",
-    payload: JSON.stringify(payload),
-  });
+    // Notify to slack
+    const payload = {
+      text: "Redash Query Notice",
+      attachments: [
+        {
+          color: "good",
+          fields,
+        },
+      ],
+    };
+
+    UrlFetchApp.fetch(slackUrl, {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify(payload),
+    });
+  }
 }
