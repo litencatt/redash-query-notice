@@ -19,7 +19,7 @@ function notify() {
   const startColumn = 1;
   const numColumns = sheet.getLastColumn();
   const numRows = sheet.getLastRow();
-  const data = sheet.getSheetValues(startRow, startColumn, numRows, numColumns);
+  const data = sheet.getSheetValues(startRow, startColumn, numRows - 1, numColumns);
 
   // Column number assigned to the task
   const enabledColumn = 0;
