@@ -12,7 +12,7 @@ function notify() {
   const sheet = s.getSheetByName("config");
 
   const startRow = 2;
-  const startColumn = 2;
+  const startColumn = 1;
   const numColumns = sheet.getLastColumn();
   const numRows = sheet.getLastRow();
 
@@ -22,14 +22,23 @@ function notify() {
   const nowM = `00${now.getMinutes()}`.slice(-2);
 
   // Column number assigned to the task
-  const notifyToColumn = 0;
-  const notifyAtColumn = 0;
-  const idsColumn = 1;
-  const webhookColumn = 2;
+  const enabledColumn = 0;
+  const notifyAtColumn = 1;
+  const idsColumn = 2;
+  const webhookColumn = 3;
 
   const data = sheet.getSheetValues(startRow, startColumn, numRows, numColumns);
 
   for (const task of data) {
+    const enabled = task[enabledColumn];
+    if (typeof enabled === "boolean") {
+      if (!enabled) {
+        continue;
+      }
+    } else {
+      continue;
+    }
+
     const notifyAt  = task[notifyAtColumn];
     const queryIds  = task[idsColumn].split("\n");
 
