@@ -9,6 +9,6 @@ export class Redash {
 
     public request(queryId: number) {
         const res = UrlFetchApp.fetch(`${this.redashUrl}/api/queries/${queryId}/results.json?api_key=${this.redashToken}`);
-        return JSON.parse(res.getContentText()).query_result.data.rows[0];
+        return JSON.parse(res.getContentText()).query_result.data;
     }
 }

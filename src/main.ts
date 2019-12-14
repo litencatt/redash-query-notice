@@ -16,8 +16,8 @@ function notify() {
 
   const startRow = 2;
   const startColumn = 1;
-  const numColumns = sheet.getLastColumn();
   const numRows = sheet.getLastRow();
+  const numColumns = sheet.getLastColumn();
   const data = sheet.getSheetValues(startRow, startColumn, numRows - 1, numColumns);
 
   // Column number assigned to the task
@@ -52,13 +52,18 @@ function notify() {
     // Execute redash API
     const fields = [];
     queryIds.forEach((queryId) => {
-      const res = redash.request(parseInt(queryId, 10))
-      Object.keys(res).forEach((key) => {
-        fields.push({
-          title: key,
-          value: res[key],
-          short: true,
-        });
+      const data = redash.request(parseInt(queryId, 10));
+      const columns = data.columns.map((column) => { return column.name });
+      const values = [];
+      const rows = data.rows;
+      rows.forEach((row) => {
+        values.push(columns.map((rowKey) => { return row[rowKey] }).join());
+      });
+
+      fields.push({
+        title: columns.join(),
+        value: values.join("\n"),
+        short: true,
       });
     });
 
