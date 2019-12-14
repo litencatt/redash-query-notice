@@ -1,7 +1,6 @@
 import {Slack} from './slack'
 import { Redash } from './redash';
 
-
 const ps = PropertiesService.getScriptProperties();
 const sheetId     = ps.getProperty("SHEET_ID");
 const redashUrl   = ps.getProperty("REDASH_URL");
@@ -32,6 +31,7 @@ function notify() {
   const nowM = `00${now.getMinutes()}`.slice(-2);
 
   const redash = new Redash(redashUrl, redashToken);
+  const slack = new Slack();
 
   for (const task of data) {
     const enabled = task[enabledColumn];
@@ -75,7 +75,6 @@ function notify() {
       ],
     };
 
-    const slack = new Slack();
     const res = slack.postMessaage(slackUrl, payload);
   }
 }
