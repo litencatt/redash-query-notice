@@ -7,14 +7,19 @@ const slackUrl    = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
 const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
 
 function notify() {
-  // spread のconfig sheetからqueryIds取得
+  // Setup to read columns from spread sheat
   const s = SpreadsheetApp.openById(sheetId);
   const sheet = s.getSheetByName("config");
   const startRow = 2;
   const numColumn = sheet.getLastColumn();
+
+  // Get notify_at from spread sheat
   const notifyAt  = sheet.getSheetValues(startRow, 2, 1, 1)[0][0];
+
+  // Get query Ids from spread sheat
   const queryIds  = sheet.getSheetValues(startRow, 3, 3, numColumn - 2)[0];
 
+  // Control execution timing
   const now = new Date();
   const nowH = `0${now.getHours()}`.slice(-2);
   const nowM = `00${now.getMinutes()}`.slice(-2);
@@ -24,7 +29,7 @@ function notify() {
     return;
   }
 
-  // redash api実行
+  // Exec redash API
   const fields = [];
   queryIds.forEach((queryId) => {
     queryId = parseInt(queryId, 10);
@@ -46,7 +51,7 @@ function notify() {
     },
   ];
 
-  // slack通知
+  // Notify to slack
   const payload = {
     text: "Redash Query Notice",
     attachments: [
