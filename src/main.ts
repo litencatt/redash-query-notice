@@ -31,6 +31,8 @@ function notify() {
   const nowH = `0${now.getHours()}`.slice(-2);
   const nowM = `00${now.getMinutes()}`.slice(-2);
 
+  const redash = new Redash(redashUrl, redashToken);
+
   for (const task of data) {
     const enabled = task[enabledColumn];
     const notifyAt = task[notifyAtColumn];
