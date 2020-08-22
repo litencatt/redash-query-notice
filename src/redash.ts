@@ -1,8 +1,16 @@
 export class Redash {
-    public static redashUrl: string;
-    public static redashToken: string;
+    private redashUrl: string;
+    private redashToken: string;
 
-    public static run(task: any[]) {
+    private titleColumn = 3;
+    private idsColumn = 4;
+
+    constructor(url: string, token: string) {
+        this.redashUrl = url;
+        this.redashToken = token;
+    }
+
+    public run(task: any[]) {
         const title = task[this.titleColumn];
         const queryIds = task[this.idsColumn].split("\n");
 
@@ -26,12 +34,9 @@ export class Redash {
         return {title, fields};
     }
 
-    public static request(queryId: number) {
+    private request(queryId: number) {
         const url = `${this.redashUrl}/api/queries/${queryId}/results.json?api_key=${this.redashToken}`;
         const res = UrlFetchApp.fetch(url);
         return JSON.parse(res.getContentText()).query_result.data;
     }
-
-    private static titleColumn = 3;
-    private static idsColumn = 4;
 }
