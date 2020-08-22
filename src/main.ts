@@ -4,17 +4,17 @@ import { Slack } from "./slack";
 
 const ps = PropertiesService.getScriptProperties();
 const sheetId     = ps.getProperty("SHEET_ID");
+const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
+
 const redashUrl   = ps.getProperty("REDASH_URL");
 const redashToken = ps.getProperty("REDASH_USER_TOKEN");
-const slackUrl    = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
 
-const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
+const slackUrl    = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
 
 function notify() {
   // Setup to read columns from spread sheat
   const s = SpreadsheetApp.openById(sheetId);
   const sheet = s.getSheetByName("config");
-
   const startRow = 2;
   const startColumn = 1;
   const numRows = sheet.getLastRow();
