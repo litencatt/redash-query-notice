@@ -1,5 +1,5 @@
 import {Slack} from './slack'
-import { Redash } from './redash';
+import { Redash } from "./redash";
 import { Scheduler } from "./scheduler";
 
 const ps = PropertiesService.getScriptProperties();
@@ -42,23 +42,6 @@ function notify() {
 
     }
 
-    // Execute redash API
-    const fields = [];
-    queryIds.forEach((queryId) => {
-      const data = redash.request(parseInt(queryId, 10));
-      const columns = data.columns.map((column) => { return column.name });
-      const values = [];
-      const rows = data.rows;
-      rows.forEach((row) => {
-        values.push(columns.map((rowKey) => { return row[rowKey] }).join());
-      });
-
-      fields.push({
-        title: columns.join(),
-        value: values.join("\n"),
-        short: true,
-      });
-    });
 
     // Notify to Slack
     const payload = {
