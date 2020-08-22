@@ -24,8 +24,6 @@ function notify() {
   // Column number assigned to the task
   const enabledColumn = 0;
   const execAtColumn = 1;
-  const titleColumn = 2;
-  const idsColumn = 3;
 
   const now = new Date();
   const redash = new Redash(redashUrl, redashToken);
@@ -38,14 +36,11 @@ function notify() {
     }
 
     // const srcService = task[srcServiceColumn];
-    let title = null;
-    let fields = null;
+    let res = null;
     const srcService = "redash";
     switch (srcService) {
       case "redash":
-        title = task[titleColumn];
-        const queryIds = task[idsColumn].split("\n");
-        fields = redash.run(queryIds);
+        res = redash.run(task);
         break;
       default:
         return;
@@ -56,9 +51,9 @@ function notify() {
       attachments: [
         {
           color: "good",
-          title,
+          title: res.title,
           title_link: sheetUrl,
-          fields,
+          fields: res.fields,
           footer,
         },
       ],
