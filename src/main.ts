@@ -1,5 +1,6 @@
 import {Slack} from './slack'
 import { Redash } from './redash';
+import { Scheduler } from "./scheduler";
 
 const ps = PropertiesService.getScriptProperties();
 const sheetId     = ps.getProperty("SHEET_ID");
@@ -25,10 +26,7 @@ function notify() {
   const notifyAtColumn = 1;
   const idsColumn = 2;
 
-  // Get now time strings
   const now = new Date();
-  const nowH = `0${now.getHours()}`.slice(-2);
-  const nowM = `00${now.getMinutes()}`.slice(-2);
 
   const redash = new Redash(redashUrl, redashToken);
   const slack = new Slack();
@@ -38,15 +36,10 @@ function notify() {
     const notifyAt = task[notifyAtColumn];
     const queryIds = task[idsColumn].split("\n");
 
-    if (!enabled) {
+    if (!Scheduler.isExecute(now, enabled, notifyAt)) {
       continue;
     }
 
-    // Control execution timing
-    const notifyH = `0${notifyAt.getHours()}`.slice(-2);
-    const notifyM = `00${notifyAt.getMinutes()}`.slice(-2);
-    if (notifyH !== nowH || notifyM !== nowM) {
-      continue;
     }
 
     // Execute redash API
