@@ -3,13 +3,13 @@ import { Scheduler } from "./scheduler";
 import { Slack } from "./slack";
 
 const ps = PropertiesService.getScriptProperties();
-const sheetId     = ps.getProperty("SHEET_ID");
+const sheetId = ps.getProperty("SHEET_ID");
 const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
 
-const redashUrl   = ps.getProperty("REDASH_URL");
+const redashUrl = ps.getProperty("REDASH_URL");
 const redashToken = ps.getProperty("REDASH_USER_TOKEN");
 
-const slackUrl    = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
+const slackUrl = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
 
 function notify() {
   // Setup to read columns from spread sheat
