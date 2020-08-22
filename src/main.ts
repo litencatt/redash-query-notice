@@ -1,6 +1,6 @@
-import {Slack} from './slack'
 import { Redash } from "./redash";
 import { Scheduler } from "./scheduler";
+import { Slack } from "./slack";
 
 const ps = PropertiesService.getScriptProperties();
 const sheetId     = ps.getProperty("SHEET_ID");
@@ -27,9 +27,7 @@ function notify() {
   const idsColumn = 2;
 
   const now = new Date();
-
   const redash = new Redash(redashUrl, redashToken);
-  const slack = new Slack();
 
   for (const task of data) {
     const enabled = task[enabledColumn];
@@ -42,20 +40,6 @@ function notify() {
 
     }
 
-
-    // Notify to Slack
-    const payload = {
-      attachments: [
-        {
-          color: "good",
-          title: "Redash Query Notice",
-          title_link: sheetUrl,
-          fields: fields,
-          footer: "<https://github.com/litencatt/redash-query-notice|Code URL>",
-        },
-      ],
-    };
-
-    const res = slack.postMessaage(slackUrl, payload);
+    Slack.postMessaage(slackUrl, sheetUrl, fields);
   }
 }
