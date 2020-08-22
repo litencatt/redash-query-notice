@@ -23,7 +23,7 @@ function notify() {
 
   // Column number assigned to the task
   const enabledColumn = 0;
-  const notifyAtColumn = 1;
+  const execAtColumn = 1;
   const titleColumn = 2;
   const idsColumn = 3;
 
@@ -32,8 +32,8 @@ function notify() {
 
   for (const task of data) {
     const enabled = task[enabledColumn];
-    const notifyAt = task[notifyAtColumn];
-    if (!Scheduler.isExecute(now, enabled, notifyAt)) {
+    const execAt = task[execAtColumn];
+    if (!Scheduler.isExecute(now, enabled, execAt)) {
       continue;
     }
 

@@ -13,7 +13,7 @@
 
 ### `config` sheet columns on Spreadsheet
 
-enable | notify_at(HH:mm) | title | query IDs
+enable | execAt(HH:mm) | title | query IDs
 -- | -- | -- | --
 ✅  | 10:00 | display title 1| 1
 🧃  | 12:30 | display title 2 | 1<br>2<br>10
