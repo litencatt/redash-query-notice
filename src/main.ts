@@ -32,12 +32,20 @@ function notify() {
   for (const task of data) {
     const enabled = task[enabledColumn];
     const notifyAt = task[notifyAtColumn];
-    const queryIds = task[idsColumn].split("\n");
-
     if (!Scheduler.isExecute(now, enabled, notifyAt)) {
       continue;
     }
 
+    // const srcService = task[srcServiceColumn];
+    let fields = null;
+    const srcService = "redash";
+    switch (srcService) {
+      case "redash":
+        const queryIds = task[idsColumn].split("\n");
+        fields = redash.run(queryIds);
+        break;
+      default:
+        return;
     }
 
     Slack.postMessaage(slackUrl, sheetUrl, fields);
