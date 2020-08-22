@@ -46,17 +46,6 @@ function notify() {
         return;
     }
 
-    const payload = {
-      attachments: [
-        {
-          color: "good",
-          title: res.title,
-          title_link: sheetUrl,
-          fields: res.fields,
-          footer,
-        },
-      ],
-    };
-    Slack.postMessaage(slackUrl, payload);
+    Slack.postMessaage(res);
   }
 }
