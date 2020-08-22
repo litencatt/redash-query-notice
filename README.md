@@ -13,7 +13,7 @@
 
 ### `config` sheet columns on Spreadsheet
 
-enable | execAt(HH:mm) | title | query IDs
--- | -- | -- | --
-✅  | 10:00 | display title 1| 1
-🧃  | 12:30 | display title 2 | 1<br>2<br>10
+enable | execAt(HH:mm)  | src service| title | query IDs
+-- | -- | -- | -- | --
+✅  | 10:00 | redash | display title 1| 1
+🧃  | 12:30 | redash | display title 2 | 1<br>2<br>10

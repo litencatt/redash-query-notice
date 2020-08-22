@@ -2,8 +2,8 @@ export class Redash {
     private redashUrl: string;
     private redashToken: string;
 
-    private titleColumn = 2;
-    private idsColumn = 2;
+    private titleColumn = 3;
+    private idsColumn = 4;
 
     constructor(url: string, token: string) {
         this.redashUrl = url;

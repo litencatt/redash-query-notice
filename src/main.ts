@@ -24,6 +24,7 @@ function notify() {
   // Column number assigned to the task
   const enabledColumn = 0;
   const execAtColumn = 1;
+  const srcServiceColumn = 2;
 
   const now = new Date();
   const redash = new Redash(redashUrl, redashToken);
@@ -35,10 +36,8 @@ function notify() {
       continue;
     }
 
-    // const srcService = task[srcServiceColumn];
     let res = null;
-    const srcService = "redash";
-    switch (srcService) {
+    switch (task[srcServiceColumn]) {
       case "redash":
         res = redash.run(task);
         break;
