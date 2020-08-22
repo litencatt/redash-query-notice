@@ -1,19 +1,20 @@
-import {Slack} from './slack'
-import { Redash } from './redash';
+import { Redash } from "./redash";
+import { Scheduler } from "./scheduler";
+import { Slack } from "./slack";
 
 const ps = PropertiesService.getScriptProperties();
 const sheetId     = ps.getProperty("SHEET_ID");
+const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
+
 const redashUrl   = ps.getProperty("REDASH_URL");
 const redashToken = ps.getProperty("REDASH_USER_TOKEN");
-const slackUrl    = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
 
-const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
+const slackUrl    = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
 
 function notify() {
   // Setup to read columns from spread sheat
   const s = SpreadsheetApp.openById(sheetId);
   const sheet = s.getSheetByName("config");
-
   const startRow = 2;
   const startColumn = 1;
   const numRows = sheet.getLastRow();
@@ -25,61 +26,28 @@ function notify() {
   const notifyAtColumn = 1;
   const idsColumn = 2;
 
-  // Get now time strings
   const now = new Date();
-  const nowH = `0${now.getHours()}`.slice(-2);
-  const nowM = `00${now.getMinutes()}`.slice(-2);
-
   const redash = new Redash(redashUrl, redashToken);
-  const slack = new Slack();
 
   for (const task of data) {
     const enabled = task[enabledColumn];
     const notifyAt = task[notifyAtColumn];
-    const queryIds = task[idsColumn].split("\n");
-
-    if (!enabled) {
+    if (!Scheduler.isExecute(now, enabled, notifyAt)) {
       continue;
     }
 
-    // Control execution timing
-    const notifyH = `0${notifyAt.getHours()}`.slice(-2);
-    const notifyM = `00${notifyAt.getMinutes()}`.slice(-2);
-    if (notifyH !== nowH || notifyM !== nowM) {
-      continue;
+    // const srcService = task[srcServiceColumn];
+    let fields = null;
+    const srcService = "redash";
+    switch (srcService) {
+      case "redash":
+        const queryIds = task[idsColumn].split("\n");
+        fields = redash.run(queryIds);
+        break;
+      default:
+        return;
     }
 
-    // Execute redash API
-    const fields = [];
-    queryIds.forEach((queryId) => {
-      const data = redash.request(parseInt(queryId, 10));
-      const columns = data.columns.map((column) => { return column.name });
-      const values = [];
-      const rows = data.rows;
-      rows.forEach((row) => {
-        values.push(columns.map((rowKey) => { return row[rowKey] }).join());
-      });
-
-      fields.push({
-        title: columns.join(),
-        value: values.join("\n"),
-        short: true,
-      });
-    });
-
-    // Notify to Slack
-    const payload = {
-      attachments: [
-        {
-          color: "good",
-          title: "Redash Query Notice",
-          title_link: sheetUrl,
-          fields: fields,
-          footer: "<https://github.com/litencatt/redash-query-notice|Code URL>",
-        },
-      ],
-    };
-
-    const res = slack.postMessaage(slackUrl, payload);
+    Slack.postMessaage(slackUrl, sheetUrl, fields);
   }
 }
