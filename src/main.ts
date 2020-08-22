@@ -10,6 +10,7 @@ const redashUrl = ps.getProperty("REDASH_URL");
 const redashToken = ps.getProperty("REDASH_USER_TOKEN");
 
 const slackUrl = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
+const footer = "<https://github.com/litencatt/redash-query-notice|Redash query notice>";
 
 function notify() {
   // Setup to read columns from spread sheat
@@ -45,7 +46,6 @@ function notify() {
         return;
     }
 
-    const footer = "<https://github.com/litencatt/redash-query-notice|Redash query notice>";
     const payload = {
       attachments: [
         {
