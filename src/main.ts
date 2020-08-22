@@ -10,6 +10,7 @@ const redashUrl = ps.getProperty("REDASH_URL");
 const redashToken = ps.getProperty("REDASH_USER_TOKEN");
 
 const slackUrl = ps.getProperty("SLACK_INCOMING_WEBHOOK_URL");
+const footer = "<https://github.com/litencatt/redash-query-notice|Redash query notice>";
 
 function notify() {
   // Setup to read columns from spread sheat
@@ -24,8 +25,7 @@ function notify() {
   // Column number assigned to the task
   const enabledColumn = 0;
   const execAtColumn = 1;
-  const titleColumn = 2;
-  const idsColumn = 3;
+  const srcServiceColumn = 2;
 
   const now = new Date();
   const redash = new Redash(redashUrl, redashToken);
@@ -37,28 +37,22 @@ function notify() {
       continue;
     }
 
-    // const srcService = task[srcServiceColumn];
-    let title = null;
-    let fields = null;
-    const srcService = "redash";
-    switch (srcService) {
+    let res = null;
+    switch (task[srcServiceColumn]) {
       case "redash":
-        title = task[titleColumn];
-        const queryIds = task[idsColumn].split("\n");
-        fields = redash.run(queryIds);
+        res = redash.run(task);
         break;
       default:
         return;
     }
 
-    const footer = "<https://github.com/litencatt/redash-query-notice|Redash query notice>";
     const payload = {
       attachments: [
         {
           color: "good",
-          title,
+          title: res.title,
           title_link: sheetUrl,
-          fields,
+          fields: res.fields,
           footer,
         },
       ],

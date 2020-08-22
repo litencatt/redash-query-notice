@@ -2,12 +2,18 @@ export class Redash {
     private redashUrl: string;
     private redashToken: string;
 
+    private titleColumn = 3;
+    private idsColumn = 4;
+
     constructor(url: string, token: string) {
         this.redashUrl = url;
         this.redashToken = token;
     }
 
-    public run(queryIds: any[]) {
+    public run(task: any[]) {
+        const title = task[this.titleColumn];
+        const queryIds = task[this.idsColumn].split("\n");
+
         const fields = [];
         queryIds.forEach((queryId) => {
           const data = this.request(parseInt(queryId, 10));
@@ -25,7 +31,7 @@ export class Redash {
           });
         });
 
-        return fields;
+        return {title, fields};
     }
 
     private request(queryId: number) {
